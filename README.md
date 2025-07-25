@@ -12,3 +12,5 @@ Technical Highlights:
 - Hosted live demo using GitHub Pages for easy accessibility
 Learning Outcome: This project strengthened the understanding of frontend architecture, improved debugging skills, and showcased the power of JavaScript in creating dynamic user experiences.
 
+Live Demo: https://princeravi9889.github.io/calculator/
+
