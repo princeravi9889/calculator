@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Full Display Calculator</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+        .calculator {
+            width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .display-screen {
+            width: 100%;
+            height: 60px;
+            margin-bottom: 20px;
+            padding: 10px;
+            font-size: 24px;
+            text-align: right;
+            border: 1px solid #ccc;
+        }
+        .button {
+            width: 80px;
+            height: 40px;
+            margin: 5px;
+            padding: 10px;
+            font-size: 18px;
+            border: none;
+            border-radius: 10px;
+            background-color: #f0f0f0;
+            cursor: pointer;
+        }
+        .button:hover {
+            background-color: #ccc;
+        }
+        .operator-button {
+            background-color: #ff9900;
+            color: #fff;
+        }
+        .operator-button:hover {
+            background-color: #ffad33;
+        }
+        .equal-button {
+            background-color: #4CAF50;
+            color: #fff;
+        }
+        .equal-button:hover {
+            background-color: #3e8e41;
+        }
+        .clear-button {
+            background-color: #f44336;
+            color: #fff;
+        }
+        .clear-button:hover {
+            background-color: #e91e63;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <input type="text" id="display-screen" class="display-screen" disabled>
+        <div class="row">
+            <button class="button" onclick="appendNumber('7')">7</button>
+            <button class="button" onclick="appendNumber('8')">8</button>
+            <button class="button" onclick="appendNumber('9')">9</button>
+            <button class="button operator-button" onclick="appendOperator('/')">/</button>
+        </div>
+        <div class="row">
+            <button class="button" onclick="appendNumber('4')">4</button>
+            <button class="button" onclick="appendNumber('5')">5</button>
+            <button class="button" onclick="appendNumber('6')">6</button>
+            <button class="button operator-button" onclick="appendOperator('*')">*</button>
+        </div>
+        <div class="row">
+            <button class="button" onclick="appendNumber('1')">1</button>
+            <button class="button" onclick="appendNumber('2')">2</button>
+            <button class="button" onclick="appendNumber('3')">3</button>
+            <button class="button operator-button" onclick="appendOperator('-')">-</button>
+        </div>
+        <div class="row">
+            <button class="button" onclick="appendNumber('0')">0</button>
+            <button class="button" onclick="appendDecimal()">.</button>
+            <button class="button operator-button" onclick="appendOperator('+')">+</button>
+            <button class="button equal-button" onclick="calculateResult()">=</button>
+        </div>
+        <div class="row">
+            <button class="button clear-button" onclick="clearDisplay()">C</button>
+            <button class="button" onclick="backspace()">DEL</button>
+            <button class="button" onclick="percentage()">%</button>
+            <button class="button" onclick="sqrt()">√</button>
+        </div>
+    </div>
+    <script>
+        let displayScreen = document.getElementById('display-screen');
+        let currentNumber = '';
+        let previousNumber = '';
+        let operator = '';
+        let fullOperation = '';
+
+        function appendNumber(number) {
+            currentNumber += number;
+            updateDisplay();
+        }
+
+        function appendOperator(op) {
+            if (currentNumber !== '') {
+                previousNumber = currentNumber;
+                currentNumber = '';
+                operator = op;
+                fullOperation = previousNumber + ' ' + operator;
+                updateDisplay();
+            }
+        }
+
+        function appendDecimal() {
+            if (!currentNumber.includes('.')) {
+                currentNumber += '.';
+                updateDisplay();
+            }
+        }
+
+        function calculateResult() {
+            if (currentNumber !== '' && previousNumber !== '') {
+                let result;
+                switch (operator) {
+                    case '+':
+                        result = parseFloat(previousNumber) + parseFloat(currentNumber);
+                        break;
+                    case '-':
+                        result = parseFloat(previousNumber) - parseFloat(currentNumber);
+                        break;
+                    case '*':
+                        result = parseFloat(previousNumber) * parseFloat(currentNumber);
+                        break;
+                    case '/':
+                        result = parseFloat(previousNumber) / parseFloat(currentNumber);
+                        break;
+                    default:
+                        result = 0;
+                }
+                fullOperation = previousNumber + ' ' + operator + ' ' + currentNumber + ' = ' + result;
+                displayScreen.value = fullOperation;
+                currentNumber = result.toString();
+                previousNumber = '';
+                operator = '';
+            }
+        }
+
+        function clearDisplay() {
+            displayScreen.value = '';
+            currentNumber = '';
+            previousNumber = '';
+            operator = '';
+            fullOperation = '';
+        }
+
+        function backspace() {
+            if (currentNumber !== '') {
+                currentNumber = currentNumber.slice(0, -1);
+                updateDisplay();
+            } else if (operator !== '') {
+                operator = '';
+                fullOperation = previousNumber;
+                displayScreen.value = fullOperation;
+            } else if (previousNumber !== '') {
+                previousNumber = previousNumber.slice(0, -1);
+                fullOperation = previousNumber;
+                displayScreen.value = fullOperation;
+            }
+        }
+
+        function percentage() {
+            currentNumber = (parseFloat(currentNumber) / 100).toString();
+            updateDisplay();
+        }
+
+        function sqrt() {
+            currentNumber = Math.sqrt(parseFloat(currentNumber)).toString();
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            if (fullOperation !== '') {
+                displayScreen.value = fullOperation + ' ' + currentNumber;
+            } else {
+                displayScreen.value = currentNumber;
+            }
+        }
+
+        document.addEventListener('keydown', function(event) {
+            switch (event.key) {
+                case '0':
+                case '1':
+                case '2':
+                case '3':
+                case '4':
+                case '5':
+                case '6':
+                case '7':
+                case '8':
+                case '9':
+                    appendNumber(event.key);
+                    break;
+                case '.':
+                    appendDecimal();
+                    break;
+                case '+':
+                    appendOperator('+');
+                    break;
+                case '-':
+                    appendOperator('-');
+                    break;
+                case '*':
+                    appendOperator('*');
+                    break;
+                case '/':
+                    appendOperator('/');
+                    break;
+                case '=':
+                case 'Enter':
+                    calculateResult();
+                    break;
+                case 'Backspace':
+                    backspace();
+                    break;
+                case 'c':
+                case 'C':
+                    clearDisplay();
+                    break;
+                default:
+                    break;
+            }
+        });
+    </script>
+</body>
+</html>
